@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Hero } from '../data/hero';
+import { HeroService } from '../hero.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-heroes',
@@ -7,9 +10,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeroesComponent implements OnInit {
 
-  constructor() { }
+  selectedHero: Hero;
 
-  ngOnInit() {
+  heroes: Hero[];
+
+  constructor(
+    private heroService: HeroService,
+    private router: Router
+  ) {
   }
 
+  ngOnInit(): void {
+    this.getHeroes();
+  }
+
+  onSelect(hero: Hero): void {
+    this.selectedHero = hero;
+  }
+
+  getHeroes(): void {
+    this.heroService.getHeroes().subscribe(n => this.heroes = n);
+  }
+
+  gotoDetail(): void {
+    this.router.navigate(['/detail', this.selectedHero.id]);
+  }
 }
