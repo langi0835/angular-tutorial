@@ -29,10 +29,32 @@ export class HeroesComponent implements OnInit {
   }
 
   getHeroes(): void {
-    this.heroService.getHeroes().subscribe(n => this.heroes = n);
+    this.heroService.getHeroes().then(n => this.heroes = n);
   }
 
   gotoDetail(): void {
     this.router.navigate(['/detail', this.selectedHero.id]);
+  }
+
+  add(name: string): void {
+    name = name.trim();
+    if (!name) { return; }
+
+    this.heroService.create(name)
+      .then(data => {
+        this.heroes.push(data);
+        this.selectedHero = null;
+      })
+  }
+
+  delete(hero: Hero): void {
+    this.heroService
+      .delete(hero.id)
+      .then(() => {
+        this.heroes = this.heroes.filter(n => n !== hero);
+        if (this.selectedHero === hero) {
+          this.selectedHero = null;
+        }
+      });
   }
 }
